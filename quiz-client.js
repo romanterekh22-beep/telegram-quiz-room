@@ -1,6 +1,9 @@
 const $ = id => document.getElementById(id);
 let roomCode = '', playerId = '', source = null, lastIndex = -1, locked = false;
 const icons = ['🦊', '🐸', '🐼', '🐙', '🐯', '🐨', '🐧', '🦉'];
+const telegram = window.Telegram?.WebApp;
+telegram?.ready();
+telegram?.expand();
 
 function show(which) {
   ['lobby', 'game', 'results'].forEach(id => $(id).classList.toggle('hidden', id !== which));
@@ -74,4 +77,8 @@ $('copy').onclick = async () => {
   catch { $('copied').textContent = `Код для друзей: ${roomCode}`; }
 };
 $('again').onclick = () => { source?.close(); history.replaceState({}, '', '/'); location.reload(); };
-$('codeInput').value = new URLSearchParams(location.search).get('room') || '';
+const launchParams = new URLSearchParams(location.search);
+const launchCode = launchParams.get('room') || telegram?.initDataUnsafe?.start_param || '';
+$('codeInput').value = launchCode;
+if (telegram?.initDataUnsafe?.user?.first_name) $('nameInput').value = telegram.initDataUnsafe.user.first_name;
+if (launchCode && telegram?.initDataUnsafe?.user?.first_name) enter(false);
