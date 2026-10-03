@@ -3,6 +3,7 @@ let roomCode = '', playerId = '', source = null, lastIndex = -1, locked = false;
 const icons = ['🦊', '🐸', '🐼', '🐙', '🐯', '🐨', '🐧', '🦉'];
 const telegram = window.Telegram?.WebApp;
 telegram?.ready();
+const telegramBotUsername = 'QuizRoomTrivia20261003Bot';
 telegram?.expand();
 
 function show(which) {
@@ -72,7 +73,7 @@ $('create').onclick = () => enter(true);
 $('join').onclick = () => enter(false);
 $('start').onclick = async () => { try { await api('/api/start', { code: roomCode, playerId }); } catch (error) { $('roomHint').textContent = error.message; } };
 $('copy').onclick = async () => {
-  const invite = `${location.origin}${location.pathname}?room=${roomCode}`;
+  const invite = telegram ? `https://t.me/${telegramBotUsername}?startapp=${encodeURIComponent(roomCode)}` : `${location.origin}${location.pathname}?room=${roomCode}`;
   try { await navigator.clipboard.writeText(invite); $('copied').textContent = 'Ссылка скопирована — отправь её друзьям.'; }
   catch { $('copied').textContent = `Код для друзей: ${roomCode}`; }
 };
